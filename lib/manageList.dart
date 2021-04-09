@@ -15,6 +15,10 @@ class _ManageListState extends State<ManageList> {
 
   List<StudyCard> cards = testcards;
 
+  TextEditingController languageAController = new TextEditingController();
+  TextEditingController languageBController = new TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,25 +27,13 @@ class _ManageListState extends State<ManageList> {
       body: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(labelText: "Language a"),
-              onSubmitted: (String v) => setState(() {
-                _languageA = v;
-              }),
-            ),
+          buildTextField(context, languageAController, "Language a"),
+          buildTextField(context, languageBController, "Language b"),
+          ElevatedButton(onPressed: () => addAndSave(), child: Text("Add a Card"),
+          style: ElevatedButton.styleFrom(
+              primary: Theme.of(context).accentColor, // background
+              onPrimary: Theme.of(context).primaryColor),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(labelText: "Language b"),
-              onSubmitted: (String v) => setState(() {
-                _languageB = v;
-              }),
-            ),
-          ),
-          ElevatedButton(onPressed: () => add(), child: Text("Add a Card")),
           SizedBox(
             height: 20,
           ),
@@ -60,6 +52,28 @@ class _ManageListState extends State<ManageList> {
           )
         ],
       ),
+    );
+  }
+
+  Padding buildTextField(BuildContext context, TextEditingController controller, String hintText) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+              decoration: InputDecoration(hintText: hintText,
+              hintStyle: TextStyle(
+                color: Theme.of(context).textTheme.bodyText2.color,
+              ),
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1.color)),
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor)),
+              filled: true,
+              fillColor: Colors.white,
+              ),
+              controller: controller,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyText1.color,
+              ),
+              textAlign: TextAlign.center,
+            ),
     );
   }
 
@@ -84,9 +98,9 @@ class _ManageListState extends State<ManageList> {
     );
   }
 
-  add() {
+  addAndSave() {
     setState(() {
-      cards.add(new StudyCard(_languageA, _languageB));
+      cards.add(new StudyCard(languageAController.text, languageBController.text));
     });
   }
 }
